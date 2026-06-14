@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>缘分测试 - 梅花易数</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .title h1 {
+            font-size: 48px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .title p {
+            font-size: 18px;
+            color: #666;
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .person-section {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 2px dashed #e0e0e0;
+        }
+
+        .person-section:last-of-type {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .person-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .input-group {
+            flex: 1;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            height: 45px;
+            padding: 0 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
+            color: #333;
+            transition: all 0.3s;
+        }
+
+        .date-select {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .date-select select {
+            flex: 1;
+            height: 45px;
+            padding: 0 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
+            color: #333;
+            background: #fff;
+        }
+
+        .date-select span {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        .btn {
+            width: 100%;
+            height: 55px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            font-size: 20px;
+            font-weight: bold;
+            border: none;
+            border-radius: 27px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* 结果页面 */
+        .result {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-header {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+
+        .result-header .emoji {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .result-header .couple-names {
+            font-size: 28px;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .result-header .score {
+            font-size: 50px;
+            color: #667eea;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .result-header .score-label {
+            font-size: 16px;
+            color: #888;
+        }
+
+        .result-header .level {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            padding: 8px 25px;
+            border-radius: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .section {
+            background: #fff;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .section-content {
+            font-size: 15px;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .info-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .info-label {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .trait-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .trait-name {
+            width: 100px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .trait-track {
+            flex: 1;
+            height: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            margin: 0 15px;
+            overflow: hidden;
+        }
+
+        .trait-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+
+        .trait-value {
+            width: 50px;
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+            color: #764ba2;
+        }
+
+        .wuxing-box {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .wuxing-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .wuxing-content {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .advice-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 25px;
+            color: #fff;
+        }
+
+        .advice-box .advice-icon {
+            font-size: 30px;
+            margin-bottom: 15px;
+        }
+
+        .advice-box .advice-text {
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .lucky-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .lucky-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .lucky-card .lucky-icon {
+            font-size: 35px;
+            margin-bottom: 10px;
+        }
+
+        .lucky-card .lucky-label {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .lucky-card .lucky-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-size: 14px;
+        }
+
+        .btn-back {
+            width: 100%;
+            height: 50px;
+            background: #f0f0f0;
+            color: #666;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .btn-back:hover {
+            background: #e0e0e0;
+        }
+
+        .disclaimer {
+            background: #fff3cd;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #856404;
+            text-align: center;
+        }
+
+        .optional-tag {
+            font-size: 12px;
+            color: #999;
+            font-weight: normal;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">
+            <h1>💕 缘分测试 💕</h1>
+            <p>基于梅花易数与易经，深度解析你们的缘分</p>
+        </div>
+
+        <!-- 输入区域 -->
+        <div class="input-section" id="inputSection">
+            <!-- 第一个人 -->
+            <div class="person-section">
+                <div class="person-title">👤 第一个人</div>
+                <div class="input-group">
+                    <label>姓名</label>
+                    <input type="text" id="name1" placeholder="请输入姓名" maxlength="20">
+                </div>
+                <div class="input-group">
+                    <label>出生年月日</label>
+                    <div class="date-select">
+                        <select id="year1"></select>
+                        <span>年</span>
+                        <select id="month1"></select>
+                        <span>月</span>
+                        <select id="day1"></select>
+                        <span>日</span>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>出生时辰 <span class="optional-tag">(选填)</span></label>
+                    <select id="hour1">
+                        <option value="">不确定</option>
+                        <option value="0">子时 (23:00-01:00)</option>
+                        <option value="2">丑时 (01:00-03:00)</option>
+                        <option value="4">寅时 (03:00-05:00)</option>
+                        <option value="6">卯时 (05:00-07:00)</option>
+                        <option value="8">辰时 (07:00-09:00)</option>
+                        <option value="10">巳时 (09:00-11:00)</option>
+                        <option value="12">午时 (11:00-13:00)</option>
+                        <option value="14">未时 (13:00-15:00)</option>
+                        <option value="16">申时 (15:00-17:00)</option>
+                        <option value="18">酉时 (17:00-19:00)</option>
+                        <option value="20">戌时 (19:00-21:00)</option>
+                        <option value="22">亥时 (21:00-23:00)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 第二个人 -->
+            <div class="person-section">
+                <div class="person-title">👤 第二个人</div>
+                <div class="input-group">
+                    <label>姓名</label>
+                    <input type="text" id="name2" placeholder="请输入姓名" maxlength="20">
+                </div>
+                <div class="input-group">
+                    <label>出生年月日</label>
+                    <div class="date-select">
+                        <select id="year2"></select>
+                        <span>年</span>
+                        <select id="month2"></select>
+                        <span>月</span>
+                        <select id="day2"></select>
+                        <span>日</span>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>出生时辰 <span class="optional-tag">(选填)</span></label>
+                    <select id="hour2">
+                        <option value="">不确定</option>
+                        <option value="0">子时 (23:00-01:00)</option>
+                        <option value="2">丑时 (01:00-03:00)</option>
+                        <option value="4">寅时 (03:00-05:00)</option>
+                        <option value="6">卯时 (05:00-07:00)</option>
+                        <option value="8">辰时 (07:00-09:00)</option>
+                        <option value="10">巳时 (09:00-11:00)</option>
+                        <option value="12">午时 (11:00-13:00)</option>
+                        <option value="14">未时 (13:00-15:00)</option>
+                        <option value="16">申时 (15:00-17:00)</option>
+                        <option value="18">酉时 (17:00-19:00)</option>
+                        <option value="20">戌时 (19:00-21:00)</option>
+                        <option value="22">亥时 (21:00-23:00)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn" onclick="calculate()">✨ 测试缘分</button>
+        </div>
+
+        <!-- 结果区域 -->
+        <div class="result" id="resultSection">
+            <!-- 结果头部 -->
+            <div class="result-header">
+                <div class="emoji" id="resultEmoji">💕</div>
+                <div class="couple-names" id="coupleNames"></div>
+                <div class="score" id="scoreValue"></div>
+                <div class="score-label">缘分指数</div>
+                <div class="level" id="levelText"></div>
+            </div>
+
+            <!-- 基本信息 -->
+            <div class="section">
+                <div class="section-title">📋 基本信息</div>
+                <div class="info-grid" id="basicInfo"></div>
+            </div>
+
+            <!-- 综合分析 -->
+            <div class="section">
+                <div class="section-title">📖 综合分析</div>
+                <div class="section-content" id="overallAnalysis"></div>
+                <div class="wuxing-box" id="wuxingBox">
+                    <div class="wuxing-title">☯ 五行关系分析</div>
+                    <div class="wuxing-content" id="wuxingContent"></div>
+                </div>
+            </div>
+
+            <!-- 缘分特质 -->
+            <div class="section">
+                <div class="section-title">🎯 缘分特质</div>
+                <div class="section-content">
+                    <div class="trait-bar">
+                        <span class="trait-name">吸引力</span>
+                        <div class="trait-track">
+                            <div class="trait-fill" id="trait1" style="width: 0%"></div>
+                        </div>
+                        <span class="trait-value" id="trait1Value">0%</span>
+                    </div>
+                    <div class="trait-bar">
+                        <span class="trait-name">默契度</span>
+                        <div class="trait-track">
+                            <div class="trait-fill" id="trait2" style="width: 0%"></div>
+                        </div>
+                        <span class="trait-value" id="trait2Value">0%</span>
+                    </div>
+                    <div class="trait-bar">
+                        <span class="trait-name">稳定性</span>
+                        <div class="trait-track">
+                            <div class="trait-fill" id="trait3" style="width: 0%"></div>
+                        </div>
+                        <span class="trait-value" id="trait3Value">0%</span>
+                    </div>
+                    <div class="trait-bar">
+                        <span class="trait-name">成长性</span>
+                        <div class="trait-track">
+                            <div class="trait-fill" id="trait4" style="width: 0%"></div>
+                        </div>
+                        <span class="trait-value" id="trait4Value">0%</span>
+                    </div>
+                    <div class="trait-bar">
+                        <span class="trait-name">幸福感</span>
+                        <div class="trait-track">
+                            <div class="trait-fill" id="trait5" style="width: 0%"></div>
+                        </div>
+                        <span class="trait-value" id="trait5Value">0%</span>
+                    </div>
+                    <div class="trait-bar">
+                        <span class="trait-name">沟通力</span>
+                        <div class="trait-track">
+                            <div class="trait-fill" id="trait6" style="width: 0%"></div>
+                        </div>
+                        <span class="trait-value" id="trait6Value">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 相处模式 -->
+            <div class="section">
+                <div class="section-title">💑 相处模式分析</div>
+                <div class="section-content" id="relationshipMode"></div>
+            </div>
+
+            <!-- 相处建议 -->
+            <div class="section">
+                <div class="section-title">💡 相处建议</div>
+                <div class="section-content" id="adviceContent"></div>
+            </div>
+
+            <!-- 幸运元素 -->
+            <div class="section">
+                <div class="section-title">🍀 幸运元素</div>
+                <div class="lucky-section">
+                    <div class="lucky-card">
+                        <div class="lucky-icon">🎨</div>
+                        <div class="lucky-label">幸运色</div>
+                        <div class="lucky-value" id="luckyColor"></div>
+                    </div>
+                    <div class="lucky-card">
+                        <div class="lucky-icon">🔢</div>
+                        <div class="lucky-label">幸运数字</div>
+                        <div class="lucky-value" id="luckyNumber"></div>
+                    </div>
+                    <div class="lucky-card">
+                        <div class="lucky-icon">📅</div>
+                        <div class="lucky-label">幸运日</div>
+                        <div class="lucky-value" id="luckyDay"></div>
+                    </div>
+                    <div class="lucky-card">
+                        <div class="lucky-icon">🧭</div>
+                        <div class="lucky-label">幸运方位</div>
+                        <div class="lucky-value" id="luckyDirection"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 温馨提示 -->
+            <div class="advice-box">
+                <div class="advice-icon">✨</div>
+                <div class="advice-text" id="finalAdvice"></div>
+            </div>
+
+            <div class="disclaimer">
+                ⚠️ 本测试基于梅花易数与易经原理，仅供娱乐参考。真正的缘分需要双方用心经营。
+            </div>
+
+            <button class="btn-back" onclick="goBack()">🔄 重新测试</button>
+        </div>
+
+        <div class="footer">
+            缘分测试 · 基于梅花易数与易经 · 仅供参考娱乐
+        </div>
+    </div>
+
+    <script>
+        // 八卦数据
+        const bagua = [
+            { name: '乾', symbol: '☰', nature: '天', wuxing: '金', direction: '西北', animal: '马' },
+            { name: '兑', symbol: '☱', nature: '泽', wuxing: '金', direction: '西', animal: '羊' },
+            { name: '离', symbol: '☲', nature: '火', wuxing: '火', direction: '南', animal: '雉' },
+            { name: '震', symbol: '☳', nature: '雷', wuxing: '木', direction: '东', animal: '龙' },
+            { name: '巽', symbol: '☴', nature: '风', wuxing: '木', direction: '东南', animal: '鸡' },
+            { name: '坎', symbol: '☵', nature: '水', wuxing: '水', direction: '北', animal: '猪' },
+            { name: '艮', symbol: '☶', nature: '山', wuxing: '土', direction: '东北', animal: '狗' },
+            { name: '坤', symbol: '☷', nature: '地', wuxing: '土', direction: '西南', animal: '牛' }
+        ];
+
+        // 六十四卦
+        const hexagrams = {
+            '11': { name: '乾为天', desc: '元亨利贞', meaning: '刚健中正，万物资始' },
+            '12': { name: '天泽履', desc: '履虎尾，不咥人', meaning: '脚踏实地，谨慎行事' },
+            '13': { name: '天火同人', desc: '同人于野，亨', meaning: '志同道合，团结协作' },
+            '14': { name: '天雷无妄', desc: '元亨利贞', meaning: '顺应自然，不可妄为' },
+            '15': { name: '天风姤', desc: '女壮，勿用取女', meaning: '偶然相遇，不可深交' },
+            '16': { name: '天水讼', desc: '有孚窒惕', meaning: '争讼不利，宜和解' },
+            '17': { name: '天山遁', desc: '亨，小利贞', meaning: '退避三舍，以待时机' },
+            '18': { name: '天地否', desc: '否之匪人', meaning: '闭塞不通，等待转机' },
+            '21': { name: '泽天夬', desc: '扬于王庭', meaning: '果断决断，但需谨慎' },
+            '22': { name: '兑为泽', desc: '亨，利贞', meaning: '喜悦和谐，人缘极佳' },
+            '23': { name: '泽火革', desc: '己日乃孚', meaning: '变革创新，除旧布新' },
+            '24': { name: '泽雷随', desc: '元亨利贞', meaning: '随顺时势，灵活应变' },
+            '25': { name: '泽风大过', desc: '栋桡', meaning: '负担过重，需调整' },
+            '26': { name: '泽水困', desc: '亨，贞大人吉', meaning: '困境中坚守，终能脱困' },
+            '27': { name: '泽山咸', desc: '亨，利贞', meaning: '感应相通，姻缘和合' },
+            '28': { name: '泽地萃', desc: '亨，王假有庙', meaning: '聚集人才，团结力量' },
+            '31': { name: '火天大有', desc: '元亨', meaning: '光明正大，事业有成' },
+            '32': { name: '火泽睽', desc: '小事吉', meaning: '意见相左，求同存异' },
+            '33': { name: '离为火', desc: '利贞，亨', meaning: '光明磊落，前途光明' },
+            '34': { name: '火雷噬嗑', desc: '亨，利用狱', meaning: '排除障碍，果断处理' },
+            '35': { name: '火风鼎', desc: '元吉，亨', meaning: '革故鼎新，事业兴旺' },
+            '36': { name: '火水未济', desc: '亨，小狐汔济', meaning: '尚未完成，继续努力' },
+            '37': { name: '火山旅', desc: '小亨，旅贞吉', meaning: '出行在外，谨慎为上' },
+            '38': { name: '火地晋', desc: '康侯用锡马蕃庶', meaning: '晋升进步，受到赏识' },
+            '41': { name: '雷天大壮', desc: '利贞', meaning: '力量充沛，但需克制' },
+            '42': { name: '雷泽归妹', desc: '征凶，无攸利', meaning: '感情之事，需慎重' },
+            '43': { name: '雷火丰', desc: '亨，王假之', meaning: '丰收繁荣，把握时机' },
+            '44': { name: '震为雷', desc: '亨，震来虩虩', meaning: '震动惊醒，奋发图强' },
+            '45': { name: '雷风恒', desc: '亨，无咎，利贞', meaning: '持之以恒，坚守正道' },
+            '46': { name: '雷水解', desc: '利西南', meaning: '困难化解，柳暗花明' },
+            '47': { name: '雷山小过', desc: '亨，利贞', meaning: '小事可为，大事不宜' },
+            '48': { name: '雷地豫', desc: '利建侯行师', meaning: '安乐祥和，顺势而为' },
+            '51': { name: '风天小畜', desc: '亨', meaning: '积少成多，循序渐进' },
+            '52': { name: '风泽中孚', desc: '豚鱼吉', meaning: '诚信为本，以诚待人' },
+            '53': { name: '风火家人', desc: '利女贞', meaning: '家庭和睦，内外有序' },
+            '54': { name: '风雷益', desc: '利有攸往', meaning: '增益助人，互利共赢' },
+            '55': { name: '巽为风', desc: '小亨，利有攸往', meaning: '顺风而行，灵活变通' },
+            '56': { name: '风水涣', desc: '亨，王假有庙', meaning: '涣散离合，需凝聚' },
+            '57': { name: '风山渐', desc: '女归吉，利贞', meaning: '循序渐进，稳步推进' },
+            '58': { name: '风地观', desc: '盥而不荐', meaning: '观察审视，深思熟虑' },
+            '61': { name: '水天需', desc: '有孚，光亨', meaning: '等待时机，蓄势待发' },
+            '62': { name: '水泽节', desc: '亨，苦节不可贞', meaning: '适度节制，过犹不及' },
+            '63': { name: '水火既济', desc: '亨，小利贞', meaning: '事已成就，守成为要' },
+            '64': { name: '水雷屯', desc: '元亨利贞', meaning: '万事开头难，坚持突破' },
+            '65': { name: '水风井', desc: '改邑不改井', meaning: '源源不断，滋养万物' },
+            '66': { name: '坎为水', desc: '习坎，有孚', meaning: '险中求胜，以诚破难' },
+            '67': { name: '水山蹇', desc: '利西南', meaning: '前路艰难，退守为上' },
+            '68': { name: '水地比', desc: '吉，原筮元永贞', meaning: '亲近辅佐，团结合作' },
+            '71': { name: '山天大畜', desc: '利贞', meaning: '积蓄力量，厚积薄发' },
+            '72': { name: '山泽损', desc: '有孚，元吉', meaning: '有所损失，以退为进' },
+            '73': { name: '山火贲', desc: '亨，小利有攸往', meaning: '文饰美化，注重外表' },
+            '74': { name: '山雷颐', desc: '贞吉', meaning: '修养身心，谨言慎行' },
+            '75': { name: '山风蛊', desc: '元亨，利涉大川', meaning: '整顿弊端，革除旧弊' },
+            '76': { name: '山水蒙', desc: '亨，匪我求童蒙', meaning: '启蒙开智，虚心学习' },
+            '77': { name: '艮为山', desc: '艮其背，不获其身', meaning: '适可而止，知止不殆' },
+            '78': { name: '山地剥', desc: '不利有攸往', meaning: '剥落衰退，静待时机' },
+            '81': { name: '地天泰', desc: '小往大来', meaning: '天地交泰，万事亨通' },
+            '82': { name: '地泽临', desc: '元亨利贞', meaning: '居高临下，统揽全局' },
+            '83': { name: '地火明夷', desc: '利艰贞', meaning: '光明受损，韬光养晦' },
+            '84': { name: '地雷复', desc: '亨，出入无疾', meaning: '一阳来复，否极泰来' },
+            '85': { name: '地风升', desc: '元亨', meaning: '步步高升，前程似锦' },
+            '86': { name: '地水师', desc: '贞丈人吉', meaning: '统领众人，纪律严明' },
+            '87': { name: '地山谦', desc: '亨，君子有终', meaning: '谦虚谨慎，品德高尚' },
+            '88': { name: '坤为地', desc: '元亨，利牝马之贞', meaning: '柔顺包容，厚德载物' }
+        };
+
+        // 五行相生相克
+        const wuxingSheng = { '木': '火', '火': '土', '土': '金', '金': '水', '水': '木' };
+        const wuxingKe = { '木': '土', '土': '水', '水': '火', '火': '金', '金': '木' };
+
+        // 初始化日期选择器
+        function initDateSelectors() {
+            const currentYear = new Date().getFullYear();
+
+            // 生成年份选项（1940-当前年）
+            for (let i = currentYear; i >= 1940; i--) {
+                const option1 = new Option(i, i);
+                const option2 = new Option(i, i);
+                document.getElementById('year1').add(option1);
+                document.getElementById('year2').add(option2);
+            }
+
+            // 生成月份选项（1-12）
+            for (let i = 1; i <= 12; i++) {
+                const option1 = new Option(i, i);
+                const option2 = new Option(i, i);
+                document.getElementById('month1').add(option1);
+                document.getElementById('month2').add(option2);
+            }
+
+            // 生成日期选项（1-31）
+            for (let i = 1; i <= 31; i++) {
+                const option1 = new Option(i, i);
+                const option2 = new Option(i, i);
+                document.getElementById('day1').add(option1);
+                document.getElementById('day2').add(option2);
+            }
+
+            // 设置默认值
+            document.getElementById('year1').value = '1990';
+            document.getElementById('year2').value = '1990';
+            document.getElementById('month1').value = '1';
+            document.getElementById('month2').value = '1';
+            document.getElementById('day1').value = '1';
+            document.getElementById('day2').value = '1';
+        }
+
+        // 页面加载时初始化
+        window.onload = function() {
+            initDateSelectors();
+        };
+
+        // 计算姓名值
+        function getNameValue(name) {
+            let value = 0;
+            for (let i = 0; i < name.length; i++) {
+                value += name.charCodeAt(i);
+            }
+            return value;
+        }
+
+        // 梅花易数起卦
+        function meihuaGua(year1, month1, day1, hour1, year2, month2, day2, hour2) {
+            const now = new Date();
+            const minute = now.getMinutes();
+            const second = now.getSeconds();
+
+            // 上卦 = (人1年+月+日 + 人2年+月+日 + 分) % 8
+            let upperNum = (year1 + month1 + day1 + year2 + month2 + day2 + minute) % 8;
+            if (upperNum === 0) upperNum = 8;
+
+            // 下卦 = (人1年+月+日+时 + 人2年+月+日+时 + 秒) % 8
+            let lowerNum = (year1 + month1 + day1 + hour1 + year2 + month2 + day2 + hour2 + second) % 8;
+            if (lowerNum === 0) lowerNum = 8;
+
+            // 动爻 = (人1年+月+日+时 + 人2年+月+日+时 + 分+秒) % 6
+            let changingYao = (year1 + month1 + day1 + hour1 + year2 + month2 + day2 + hour2 + minute + second) % 6;
+            if (changingYao === 0) changingYao = 6;
+
+            return { upperNum, lowerNum, changingYao };
+        }
+
+        // 计算五行关系
+        function getWuxingRelation(wx1, wx2) {
+            if (wuxingSheng[wx1] === wx2) return '相生';
+            if (wuxingKe[wx1] === wx2) return '相克';
+            if (wuxingSheng[wx2] === wx1) return '被生';
+            if (wuxingKe[wx2] === wx1) return '被克';
+            return '比和';
+        }
+
+        // 获取关系描述
+        function getRelationDesc(relation, name1, name2, wx1, wx2) {
+            const descs = {
+                '相生': `${name1}（${wx1}）与${name2}（${wx2}）形成相生关系。这意味着你们之间有着天然的吸引力，${name1}的特质能够滋养${name2}，彼此能够相互促进、共同成长。这种关系中，双方都能从对方身上获得正能量。`,
+                '相克': `${name1}（${wx1}）与${name2}（${wx2}）形成相克关系。这说明你们之间存在一定的张力和挑战，但这种张力也可以转化为动力。关键在于相互理解和包容，学会在差异中寻找平衡。`,
+                '被生': `${name1}（${wx1}）与${name2}（${wx2}）形成被生关系。这意味着${name2}对${name1}有着强烈的吸引力，${name1}会不自觉地被${name2}所吸引。在这种关系中，${name2}往往扮演着引导者和支持者的角色。`,
+                '被克': `${name1}（${wx1}）与${name2}（${wx2}）形成被克关系。这意味着你们之间存在一定的制约，但制约也是一种磨练。通过相互理解和调整，你们可以建立起独特而深刻的关系。`,
+                '比和': `${name1}（${wx1}）与${name2}（${wx2}）形成比和关系。这意味着你们有着相似的特质和价值观，容易产生共鸣和默契。你们之间的关系往往比较和谐，能够相互理解和支持。`
+            };
+            return descs[relation];
+        }
+
+        // 主计算函数
+        function calculate() {
+            const name1 = document.getElementById('name1').value.trim();
+            const name2 = document.getElementById('name2').value.trim();
+            const year1 = document.getElementById('year1').value;
+            const month1 = document.getElementById('month1').value;
+            const day1 = document.getElementById('day1').value;
+            const year2 = document.getElementById('year2').value;
+            const month2 = document.getElementById('month2').value;
+            const day2 = document.getElementById('day2').value;
+            const hour1 = document.getElementById('hour1').value;
+            const hour2 = document.getElementById('hour2').value;
+
+            // 验证输入
+            if (!name1) { alert('请输入第一个人的姓名'); return; }
+            if (!name2) { alert('请输入第二个人的姓名'); return; }
+
+            // 解析日期
+            const date1 = { year: parseInt(year1), month: parseInt(month1), day: parseInt(day1) };
+            const date2 = { year: parseInt(year2), month: parseInt(month2), day: parseInt(day2) };
+            const h1 = hour1 ? parseInt(hour1) : 12;
+            const h2 = hour2 ? parseInt(hour2) : 12;
+
+            // 梅花易数起卦
+            const gua = meihuaGua(date1.year, date1.month, date1.day, h1, date2.year, date2.month, date2.day, h2);
+
+            // 获取卦象信息
+            const upperGua = bagua[gua.upperNum - 1];
+            const lowerGua = bagua[gua.lowerNum - 1];
+            const hexKey = '' + gua.upperNum + gua.lowerNum;
+            const hexInfo = hexagrams[hexKey] || { name: '未知卦', desc: '', meaning: '卦象不明' };
+
+            // 五行关系
+            const relation = getWuxingRelation(lowerGua.wuxing, upperGua.wuxing);
+            const relationDesc = getRelationDesc(relation, name1, name2, lowerGua.wuxing, upperGua.wuxing);
+
+            // 计算姓名值
+            const value1 = getNameValue(name1);
+            const value2 = getNameValue(name2);
+
+            // 计算缘分指数
+            const baseScore = gua.upperNum * 10 + gua.lowerNum * 8 + gua.changingYao * 12;
+            const dateScore = (date1.year + date1.month + date1.day + date2.year + date2.month + date2.day) % 20;
+            const nameScore = (value1 + value2) % 15;
+            let score = ((baseScore + dateScore + nameScore) % 26) + 75;
+
+            // 根据五行关系调整分数
+            if (relation === '相生') score = Math.min(99, score + 5);
+            else if (relation === '比和') score = Math.min(99, score + 3);
+            else if (relation === '相克') score = Math.max(70, score - 3);
+
+            // 计算各项特质
+            const traits = {
+                attraction: Math.min(98, Math.max(60, (score + value1 % 15 + gua.upperNum * 5) % 39 + 60)),
+                tacit: Math.min(98, Math.max(60, (score + value2 % 12 + gua.lowerNum * 4) % 35 + 63)),
+                stability: Math.min(98, Math.max(60, (score + gua.changingYao * 8 + dateScore) % 33 + 65)),
+                growth: Math.min(98, Math.max(60, (score + (date1.year + date2.year) % 10) % 30 + 68)),
+                happiness: Math.min(98, Math.max(60, (score + gua.upperNum + gua.lowerNum) % 28 + 70)),
+                communication: Math.min(98, Math.max(60, (score + nameScore * 2) % 32 + 66))
+            };
+
+            // 缘分等级
+            let level = '';
+            let emoji = '';
+            if (score >= 95) { level = '天作之合'; emoji = '💕✨'; }
+            else if (score >= 90) { level = '情投意合'; emoji = '💕'; }
+            else if (score >= 85) { level = '心有灵犀'; emoji = '💗'; }
+            else if (score >= 80) { level = '相知相惜'; emoji = '💖'; }
+            else if (score >= 75) { level = '默契十足'; emoji = '💓'; }
+            else { level = '缘分初定'; emoji = '💘'; }
+
+            // 相处模式分析
+            const modes = {
+                '相生': '你们的相处模式非常和谐，彼此能够相互滋养和支持。建议多一起做一些有意义的事情，共同成长。',
+                '相克': '你们的相处模式充满活力，但也容易产生摩擦。建议多沟通、多理解，学会在冲突中寻找共识。',
+                '被生': '你们的相处模式中，一方更主动，另一方更被动。建议主动的一方给予对方适当空间，被动的一方也要学会表达。',
+                '被克': '你们的相处模式需要更多的耐心和包容。建议多关注对方的优点，学会欣赏彼此的不同。',
+                '比和': '你们的相处模式非常默契，能够相互理解和支持。建议在稳定的基础上，适当增加一些新鲜感。'
+            };
+
+            // 相处建议
+            const advices = {
+                '相生': ['多一起参加户外活动，增进感情', '共同制定未来计划，增强默契', '在对方需要时给予支持和鼓励', '保持浪漫，定期制造小惊喜'],
+                '相克': ['学会换位思考，理解对方立场', '在分歧时保持冷静，避免情绪化', '寻找共同兴趣，建立共同话题', '尊重彼此的个性和空间'],
+                '被生': ['主动方要学会倾听和理解', '被动方要勇于表达自己的想法', '建立平等的沟通机制', '共同分担责任和义务'],
+                '被克': ['多关注对方的优点和长处', '学会包容和接纳彼此的不同', '在困难时相互支持和鼓励', '保持积极的心态，共同面对挑战'],
+                '比和': ['一起尝试新事物，保持新鲜感', '共同学习和成长，互相激励', '保持适当的个人空间', '定期回顾和总结，共同进步']
+            };
+
+            // 幸运元素
+            const colors = ['红色', '蓝色', '绿色', '紫色', '橙色', '粉色', '金色', '白色'];
+            const days = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+            const directions = ['东方', '西方', '南方', '北方', '东南', '东北', '西南', '西北'];
+
+            const luckyColor = colors[(gua.upperNum + gua.lowerNum) % colors.length];
+            const luckyNumber = ((gua.upperNum + gua.lowerNum + gua.changingYao) % 9) + 1;
+            const luckyDay = days[(date1.day + date2.day) % days.length];
+            const luckyDirection = directions[(gua.upperNum + gua.lowerNum) % directions.length];
+
+            // 最终建议
+            const finalAdvices = [
+                `${name1}和${name2}，你们的缘分指数高达${score}分！${hexInfo.meaning}。记住，缘分是天注定，幸福靠自己。珍惜彼此，用心经营，你们的未来一定会更加美好。`,
+                `${name1}和${name2}，你们的缘分指数是${score}分。${hexInfo.meaning}。每一段缘分都值得珍惜，希望你们能够相互理解、相互支持，一起书写属于你们的故事。`,
+                `${name1}和${name2}，缘分让你们相遇，而爱情需要双方共同浇灌。你们的缘分指数是${score}分，${hexInfo.meaning}。相信只要用心，一定能够收获美好的未来。`
+            ];
+
+            // 更新UI
+            document.getElementById('inputSection').style.display = 'none';
+            document.getElementById('resultSection').style.display = 'block';
+            document.getElementById('resultEmoji').textContent = emoji;
+            document.getElementById('coupleNames').textContent = `${name1} & ${name2}`;
+            document.getElementById('scoreValue').textContent = `${score}分`;
+            document.getElementById('levelText').textContent = level;
+
+            // 基本信息
+            document.getElementById('basicInfo').innerHTML = `
+                <div class="info-item">
+                    <div class="info-label">卦象</div>
+                    <div class="info-value">${hexInfo.name}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">卦辞</div>
+                    <div class="info-value">${hexInfo.desc}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">${name1}的属性</div>
+                    <div class="info-value">${lowerGua.name}${lowerGua.nature}（${lowerGua.wuxing}）</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">${name2}的属性</div>
+                    <div class="info-value">${upperGua.name}${upperGua.nature}（${upperGua.wuxing}）</div>
+                </div>
+            `;
+
+            // 综合分析
+            document.getElementById('overallAnalysis').innerHTML = `<p>${hexInfo.meaning}。从卦象来看，${name1}与${name2}的缘分有着深厚的根基，只要用心经营，定能收获美好的结果。</p>`;
+
+            // 五行分析
+            document.getElementById('wuxingContent').innerHTML = `<p>${relationDesc}</p>`;
+
+            // 动画显示特质条
+            setTimeout(() => { document.getElementById('trait1').style.width = traits.attraction + '%'; document.getElementById('trait1Value').textContent = traits.attraction + '%'; }, 200);
+            setTimeout(() => { document.getElementById('trait2').style.width = traits.tacit + '%'; document.getElementById('trait2Value').textContent = traits.tacit + '%'; }, 400);
+            setTimeout(() => { document.getElementById('trait3').style.width = traits.stability + '%'; document.getElementById('trait3Value').textContent = traits.stability + '%'; }, 600);
+            setTimeout(() => { document.getElementById('trait4').style.width = traits.growth + '%'; document.getElementById('trait4Value').textContent = traits.growth + '%'; }, 800);
+            setTimeout(() => { document.getElementById('trait5').style.width = traits.happiness + '%'; document.getElementById('trait5Value').textContent = traits.happiness + '%'; }, 1000);
+            setTimeout(() => { document.getElementById('trait6').style.width = traits.communication + '%'; document.getElementById('trait6Value').textContent = traits.communication + '%'; }, 1200);
+
+            // 相处模式
+            document.getElementById('relationshipMode').innerHTML = `<p>${modes[relation]}</p>`;
+
+            // 相处建议
+            const adviceList = advices[relation];
+            document.getElementById('adviceContent').innerHTML = '<ul>' + adviceList.map(a => `<li>${a}</li>`).join('') + '</ul>';
+
+            // 幸运元素
+            document.getElementById('luckyColor').textContent = luckyColor;
+            document.getElementById('luckyNumber').textContent = luckyNumber;
+            document.getElementById('luckyDay').textContent = luckyDay;
+            document.getElementById('luckyDirection').textContent = luckyDirection;
+
+            // 最终建议
+            document.getElementById('finalAdvice').textContent = finalAdvices[Math.floor(Math.random() * finalAdvices.length)];
+
+            // 滚动到顶部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 返回
+        function goBack() {
+            document.getElementById('inputSection').style.display = 'block';
+            document.getElementById('resultSection').style.display = 'none';
+            document.getElementById('name1').value = '';
+            document.getElementById('name2').value = '';
+            document.getElementById('year1').value = '1990';
+            document.getElementById('month1').value = '1';
+            document.getElementById('day1').value = '1';
+            document.getElementById('year2').value = '1990';
+            document.getElementById('month2').value = '1';
+            document.getElementById('day2').value = '1';
+            document.getElementById('hour1').value = '';
+            document.getElementById('hour2').value = '';
+
+            // 重置动画
+            for (let i = 1; i <= 6; i++) {
+                document.getElementById('trait' + i).style.width = '0%';
+            }
+        }
+    </script>
+</body>
+</html>
